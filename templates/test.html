@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMasterAI</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6d8eb7;
+            --light-color: #f5f7fa;
+            --dark-color: #2c3e50;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .header .tagline {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .intro-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+            padding: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .feature-item {
+            background: var(--light-color);
+            border-radius: 6px;
+            padding: 12px;
+            flex: 1 1 calc(50% - 15px);
+            min-width: 200px;
+            border-left: 3px solid var(--secondary-color);
+        }
+        
+        .feature-item h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+        
+        .feature-item p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--dark-color);
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-body {
+            padding: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .btn-info {
+            background-color: var(--info-color);
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .task-list {
+            margin-top: 15px;
+        }
+        
+        .task {
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        
+        .task:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .task.completed {
+            background-color: #f8f9fa;
+        }
+        
+        .task.completed .task-title {
+            text-decoration: line-through;
+            color: #868e96;
+        }
+        
+        .task-info {
+            flex: 1;
+        }
+        
+        .task-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .task-meta {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .priority-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .priority-none {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        
+        .priority-low {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .priority-medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .priority-high {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .no-tasks {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+        
+        .example-container {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-top: 10px;
+            border-left: 3px solid var(--info-color);
+        }
+        
+        .example-text {
+            font-family: monospace;
+            color: var(--dark-color);
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow: auto;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .modal-header {
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .modal-footer {
+            padding-top: 15px;
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            text-align: right;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>TaskMaster</h1>
+                <div class="tagline">Intelligent task management powered by MettaLang</div>
+            </div>
+        </div>
+        
+        <div class="intro-card">
+            <h2>Welcome to TaskMaster</h2>
+            <p>Organize your life with the power of artificial intelligence. TaskMasterAI uses natural language processing to understand your tasks, automatically sets priorities, and helps you stay on track.</p>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <h3>Natural Language Input</h3>
+                    <p>Simply type your task as you would say it. Our AI understands dates, times, and priorities from your text.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Smart Date time Recognition</h3>
+                    <p>Enter dates naturally like "2025-03-12", "11:00:00", or specific dates like "March 15".</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Priority Management</h3>
+                    <p>Tasks are automatically prioritized based on urgency and importance indicators in your text.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Quick Task Creation</h3>
+                    <p>Create complex tasks in seconds using simple language instead of filling out multiple fields.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">Add Task</div>
+            <div class="card-body">
+                <div class="tabs">
+                    <div class="tab active" data-tab="nlp">Quick Add (NLP)</div>
+                    <div class="tab" data-tab="manual">Manual</div>
+                </div>
+                
+                <div class="tab-content active" id="nlp-tab">
+                    <div class="form-group">
+                        <label for="nlpText">Describe your task</label>
+                        <input type="text" id="nlpText" class="form-control" placeholder="e.g., Remind me to buy milk by 2025-03-15 10:00:00">
+                    </div>
+                    <div class="example-container">
+                        <p><strong>Try these examples:</strong></p>
+                        <p class="example-text">"Remind me to call the doctor by 2025-03-13 09:00:00"</p>
+                        <p class="example-text">"Remind me to buy groceries by 2025-03-12 10:00:00"</p>
+                       
+                    </div>
+                    <button class="btn" onclick="addNLPTask()">Add Task</button>
+                </div>
+                
+                <div class="tab-content" id="manual-tab">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" class="form-control" placeholder="Task title">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" class="form-control" placeholder="Task description"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="time">Time</label>
+                            <input type="time" id="time" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+                        <select id="priority" class="form-control">
+                            <option value="none">None</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="addManualTask()">Add Task</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span>Task List</span>
+                <button class="btn btn-sm" onclick="fetchTasks()">Refresh</button>
+            </div>
+            <div class="card-body">
+                <div id="taskList" class="task-list">
+                    <div class="no-tasks">No tasks found</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Task Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Task</h3>
+                <button class="close-modal" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-id">
+                <div class="form-group">
+                    <label for="edit-title">Title</label>
+                    <input type="text" id="edit-title" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit-description">Description</label>
+                    <textarea id="edit-description" class="form-control"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-date">Date</label>
+                        <input type="date" id="edit-date" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-time">Time</label>
+                        <input type="time" id="edit-time" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-priority">Priority</label>
+                    <select id="edit-priority" class="form-control">
+                        <option value="none">None</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="closeEditModal()">Cancel</button>
+                <button class="btn btn-success" onclick="updateTask()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+            });
+        });
+        
+        let tasks = [];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tasks
+            fetchTasks();
+            
+            // Set today's date as default for the date input
+            const today = new Date();
+            const formattedDate = today.toISOString().substr(0, 10);
+            document.getElementById('date').value = formattedDate;
+        });
+        
+        // Fetch tasks from server
+        async function fetchTasks() {
+            try {
+                const response = await fetch('http://localhost:5001/tasks');
+                tasks = await response.json();
+                updateTaskList();
+            } catch (error) {
+                console.error('Error fetching tasks:', error);
+                document.getElementById('taskList').innerHTML = '<div class="no-tasks">Error loading tasks. Server may be offline.</div>';
+            }
+        }
+        
+        // Update task list
+        function updateTaskList() {
+            const taskList = document.getElementById('taskList');
+            
+            if (tasks.length === 0) {
+                taskList.innerHTML = '<div class="no-tasks">No tasks found</div>';
+                return;
+            }
+            
+            taskList.innerHTML = '';
+            
+            tasks.forEach(task => {
+                const taskElement = document.createElement('div');
+                taskElement.className = `task ${task.status === 'completed' ? 'completed' : ''}`;
+                
+                const priorityLabel = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
+                
+                taskElement.innerHTML = `
+                    <div class="task-info">
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-meta">
+                            ${task.date} ${task.time}
+                            <span class="priority-badge priority-${task.priority}">${priorityLabel}</span>
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="btn btn-info btn-sm" onclick="openEditModal(${task.id})">Edit</button>
+                        <button class="btn btn-success btn-sm" onclick="markDone(${task.id})">Done</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteTask(${task.id})">Delete</button>
+                    </div>
+                `;
+                
+                taskList.appendChild(taskElement);
+            });
+        }
+        
+        // Add task using NLP
+        async function addNLPTask() {
+            const text = document.getElementById('nlpText').value.trim();
+            
+            if (!text) {
+                alert('Please enter task text');
+                return;
+            }
+            
+            try {
+                await fetch('http://localhost:5001/tasks/nlp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+                
+                document.getElementById('nlpText').value = '';
+                fetchTasks();
+            } catch (error) {
+                console.error('Error adding NLP task:', error);
+                alert('Error adding task. Server may be offline.');
+            }
+        }
+        
+        // Add task manually
+        async function addManualTask() {
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const priority = document.getElementById('priority').value;
+            
+            if (!title) {
+                alert('Please enter a task title');
+                return;
+            }
+            
+            if (!date) {
+                alert('Please select a date');
+                return;
+            }
+            
+            try {
+                await fetch('http://localhost:5001/tasks/manual', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, description, date, time, priority })
+                });
+                
+                // Clear form
+                document.getElementById('title').value = '';
+                document.getElementById('description').value = '';
+                document.getElementById('time').value = '';
+                
+                fetchTasks();
+            } catch (error) {
+                console.error('Error adding manual task:', error);
+                alert('Error adding task. Server may be offline.');
+            }
+        }
+        
+        // Delete task
+        async function deleteTask(id) {
+            if (!confirm("Are you sure you want to delete this task?")) {
+                return;
+            }
+            
+            try {
+                await fetch(`http://localhost:5001/tasks/${id}`, { method: 'DELETE' });
+                fetchTasks();
+            } catch (error) {
+                console.error('Error deleting task:', error);
+                alert('Error deleting task. Server may be offline.');
+            }
+        }
+        
+        // Mark task as done
+        async function markDone(id) {
+            try {
+                await fetch(`http://localhost:5001/tasks/${id}/done`, { method: 'PATCH' });
+                fetchTasks();
+            } catch (error) {
+                console.error('Error marking task as done:', error);
+                alert('Error updating task. Server may be offline.');
+            }
+        }
+        
+        // Open edit modal
+        function openEditModal(id) {
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+            
+            // Fill in the edit form with current task details
+            document.getElementById('edit-id').value = task.id;
+            document.getElementById('edit-title').value = task.title;
+            document.getElementById('edit-description').value = task.description || '';
+            document.getElementById('edit-date').value = task.date;
+            document.getElementById('edit-time').value = task.time;
+            document.getElementById('edit-priority').value = task.priority;
+            
+            // Show the modal
+            document.getElementById('editModal').style.display = 'block';
+        }
+        
+        // Close edit modal
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+        
+        // Update task
+        async function updateTask() {
+            const id = document.getElementById('edit-id').value;
+            const title = document.getElementById('edit-title').value.trim();
+            const description = document.getElementById('edit-description').value.trim();
+            const date = document.getElementById('edit-date').value;
+            const time = document.getElementById('edit-time').value;
+            const priority = document.getElementById('edit-priority').value;
+            
+            if (!title) {
+                alert('Please enter a task title');
+                return;
+            }
+            
+            if (!date) {
+                alert('Please select a date');
+                return;
+            }
+            
+            try {
+                await fetch(`http://localhost:5001/tasks/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        title, 
+                        description, 
+                        date, 
+                        time, 
+                        priority 
+                    })
+                });
+                
+                closeEditModal();
+                fetchTasks();
+            } catch (error) {
+                console.error('Error updating task:', error);
+                alert('Error updating task. Server may be offline.');
+            }
+        }
+        
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        };
+    </script>
+</body>
+</html>
